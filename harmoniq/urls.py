@@ -7,12 +7,13 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 
-from .views import health_check
+from .views import IndexView, health_check
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("__reload__/", include("django_browser_reload.urls")),
     path("health/", health_check, name="health_check"),
+    path("", IndexView.as_view(), name="index"),
 ]
 
 if settings.DEBUG:
