@@ -8,16 +8,16 @@ A music playlist management web application with a macOS Finder-like interface, 
 - 🖥️ macOS Finder-inspired interface
 - 🔄 Progressive enhancement with Unpoly
 - 🎨 Modern UI with Tailwind CSS
-- 🔐 OAuth integration with Tidal and Spotify
+- 🔐 OAuth integration with streaming services such as: Tidal, Spotify, Apple Music
 - 📱 Responsive design
-- ⚡ AJAX-based navigation
+- ⚡ Seamless navigation with Unpoly (no page reloads)
 
 ## Tech Stack
 
-- **Backend**: Django 5.0 with Django REST Framework
+- **Backend**: Django 5.0
 - **Database**: SQLite
 - **Frontend**: Tailwind CSS, Unpoly, Sortable.js
-- **Package Management**: Poetry
+- **Package Management**: Poetry (Python), npm (Tailwind CSS)
 - **Authentication**: OAuth for music services
 
 ## Setup
@@ -56,20 +56,24 @@ python manage.py migrate
 python manage.py createsuperuser
 ```
 
-6. Install and build Tailwind CSS:
+6. Install Node.js dependencies for Tailwind CSS:
 ```bash
-python manage.py tailwind install
-python manage.py tailwind build
+npm install
 ```
 
-7. Run the development server:
+7. Build Tailwind CSS:
+```bash
+npm run build:css
+```
+
+8. Run the development server:
 ```bash
 python manage.py runserver
 ```
 
-8. In a separate terminal, run Tailwind in watch mode:
+9. In a separate terminal, run Tailwind in watch mode:
 ```bash
-python manage.py tailwind start
+npm run watch:css
 ```
 
 ### Environment Variables
@@ -77,16 +81,12 @@ python manage.py tailwind start
 Create a `.env` file in the project root:
 
 ```env
-SECRET_KEY=your-secret-key-here
 DEBUG=True
+SECRET_KEY=your-secret-key-here
 ALLOWED_HOSTS=localhost,127.0.0.1
-
-# Music API Credentials
-TIDAL_CLIENT_ID=your-tidal-client-id
-TIDAL_CLIENT_SECRET=your-tidal-client-secret
-SPOTIFY_CLIENT_ID=your-spotify-client-id
-SPOTIFY_CLIENT_SECRET=your-spotify-client-secret
 ```
+
+**Note**: API credentials for music services (Tidal, Spotify, Apple Music) are stored securely in the database with proper hashing, not in environment variables.
 
 ## Project Structure
 
@@ -96,45 +96,95 @@ harmoniq/
 │   ├── settings.py
 │   ├── urls.py
 │   └── wsgi.py
-├── music/                    # Music app
-│   ├── models.py
-│   ├── views.py
-│   ├── urls.py
-│   ├── api.py
-│   └── templates/
 ├── static/                   # Static files
-│   ├── css/
-│   ├── js/
-│   └── images/
+│   ├── src/
+│   │   └── index.css        # Tailwind CSS source
+│   └── dist/
+│       └── index.css        # Compiled Tailwind CSS
 ├── templates/                # Base templates
 ├── manage.py
-├── pyproject.toml
+├── pyproject.toml           # Python dependencies (Poetry)
+├── package.json             # Node.js dependencies (Tailwind CSS only)
 └── README.md
 ```
 
 ## Usage
 
-1. Visit `http://localhost:8000` to access the application
-2. Create playlists and add tracks
-3. Use drag-and-drop to reorder tracks within playlists
-4. Move tracks between playlists by dragging them
-5. Connect to music services via OAuth
+1. **Add Streaming Accounts**: Connect your music streaming services (Tidal, Spotify, Apple Music) via OAuth
+2. **View Current Playlists**: Browse and manage your existing playlists from connected services
+3. **Search and Add Music**: Search for tracks across your connected services and add them to playlists
+4. **Organize Playlists**: Use drag-and-drop to reorder tracks within playlists
+5. **Cross-Platform Management**: Move tracks between playlists and across different streaming services
+
+### Health Check
+
+The application provides a health check endpoint at `/health/` that returns the service status:
+
+```bash
+curl http://localhost:8000/health/
+```
+
+Response:
+```json
+{
+    "status": "healthy",
+    "service": "harmoniq",
+    "version": "1.0.0"
+}
+```
 
 ## Development
+
+### Setup Development Environment
+
+1. Install pre-commit hooks:
+```bash
+pre-commit install
+```
+
+2. Install all development dependencies:
+```bash
+poetry install --with dev
+```
 
 ### Running Tests
 ```bash
 pytest
 ```
 
-### Code Formatting
+### Code Quality Tools
+
+#### Code Formatting
 ```bash
+# Format code with Black
 black .
+
+# Sort imports with isort
+isort .
 ```
 
-### Linting
+#### Linting
 ```bash
+# Run flake8
 flake8
+```
+
+#### Pre-commit (Recommended)
+```bash
+# Run pre-commit on all files
+pre-commit run --all-files
+
+# Run pre-commit on staged files only
+pre-commit run
+```
+
+### Tailwind CSS Development
+```bash
+# Watch for changes and rebuild CSS
+npm run watch:css
+
+# Build CSS for production
+npm run build:css
 ```
 
 ## License
