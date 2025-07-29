@@ -20,20 +20,26 @@ DEBUG = os.getenv('DEBUG', 'True').lower() == 'true'
 
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
 
-# Application definition
-INSTALLED_APPS = [
+BASE_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'rest_framework',
-    'corsheaders',
-    'tailwind',
-    'theme',
+]
+
+THIRD_PARTY_APPS = [
     'django_browser_reload',
-    'music',
+]
+
+LOCAL_APPS = [
+]
+
+# Application definition
+INSTALLED_APPS = [
+    *BASE_APPS,
+    *LOCAL_APPS,
+    *THIRD_PARTY_APPS,
 ]
 
 MIDDLEWARE = [
