@@ -1,0 +1,14 @@
+{
+  "name": "harmoniq-theme",
+  "version": "1.0.0",
+  "description": "Tailwind CSS theme for Harmoniq music application",
+  "scripts": {
+    "build": "tailwindcss -i ./src/styles.css -o ../dist/styles.css --watch",
+    "build:prod": "tailwindcss -i ./src/styles.css -o ../dist/styles.css --minify"
+  },
+  "devDependencies": {
+    "@tailwindcss/forms": "^0.5.7",
+    "@tailwindcss/typography": "^0.5.10",
+    "tailwindcss": "^3.4.0"
+  }
+}

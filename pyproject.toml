@@ -1,0 +1,35 @@
+[tool.poetry]
+name = "harmoniq"
+version = "0.1.0"
+description = "A music playlist management web application with macOS Finder-like interface"
+authors = ["Your Name <your.email@example.com>"]
+readme = "README.md"
+packages = [{include = "harmoniq"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+django = "^5.0"
+djangorestframework = "^3.14"
+django-cors-headers = "^4.3"
+requests = "^2.31"
+python-dotenv = "^1.0"
+django-tailwind = "^3.8"
+django-browser-reload = "^1.12"
+
+[tool.poetry.group.dev.dependencies]
+black = "^23.12"
+flake8 = "^7.0"
+pytest = "^7.4"
+pytest-django = "^4.7"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 88
+target-version = ['py311']
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "harmoniq.settings"
+python_files = ["tests.py", "test_*.py", "*_tests.py"]
