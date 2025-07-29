@@ -74,23 +74,43 @@ body {
 }
 
 .dock-icon {
-    @apply w-12 h-12 rounded-xl bg-gradient-to-br from-white/10 to-white/5 flex items-center justify-center cursor-pointer transition-all duration-300 border border-white/10 relative overflow-hidden;
+    width: 48px;
+    height: 48px;
+    @apply rounded-xl flex items-center justify-center cursor-pointer transition-all duration-300 relative overflow-hidden;
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+}
+
+.dock-icon-styled {
+    @apply bg-gradient-to-br from-white/10 to-white/5 border border-white/10;
+}
+
+.dock-icon-img {
+    width: 48px !important;
+    height: 48px !important;
+    min-width: 48px !important;
+    min-height: 48px !important;
+    max-width: 48px !important;
+    max-height: 48px !important;
+    @apply rounded-xl;
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+    object-fit: fill;
+    margin: 0;
+    padding: 0;
+    display: block;
 }
 
 .dock-icon:hover {
-    @apply scale-120 bg-gradient-to-br from-white/20 to-white/10 shadow-lg;
+    @apply scale-120;
+}
+
+.dock-icon-styled:hover {
+    @apply bg-gradient-to-br from-white/20 to-white/10 shadow-lg;
 }
 
 .icon-placeholder {
     @apply w-6 h-6 bg-white/70 rounded-md flex items-center justify-center text-xs font-bold text-black/70;
-}
-
-.icon-shine {
-    @apply absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full transition-transform duration-600;
-}
-
-.dock-icon:hover .icon-shine {
-    @apply translate-x-full;
 }
 
 /* Responsive Design */
@@ -102,8 +122,21 @@ body {
     }
 
     .dock-icon {
-        width: 2.5rem;
-        height: 2.5rem;
+        width: 48px;
+        height: 48px;
+    }
+
+    .dock-icon-img {
+        width: 48px !important;
+        height: 48px !important;
+        min-width: 48px !important;
+        min-height: 48px !important;
+        max-width: 48px !important;
+        max-height: 48px !important;
+        border-radius: 0.75rem;
+        margin: 0;
+        padding: 0;
+        display: block;
     }
 
     .icon-placeholder {
