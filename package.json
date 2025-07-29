@@ -1,0 +1,24 @@
+{
+  "name": "harmoniq",
+  "version": "1.0.0",
+  "description": "A music playlist management web application with a macOS Finder-like interface, built with Django, Tailwind CSS, and Unpoly for progressive enhancement.",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "watch:css": "npx @tailwindcss/cli -i ./static/src/index.css -o ./static/dist/index.css --watch",
+    "build:css": "npx @tailwindcss/cli -i ./static/src/index.css -o ./static/dist/index.css"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WilberC/harmoniq.git"
+  },
+  "author": "wilberC",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/WilberC/harmoniq/issues"
+  },
+  "homepage": "https://github.com/WilberC/harmoniq#readme",
+  "dependencies": {
+    "@tailwindcss/cli": "^4.1.11",
+    "tailwindcss": "^4.1.11"
+  }
+}

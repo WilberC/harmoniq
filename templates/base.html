@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Harmoniq - Music Playlist Manager{% endblock %}</title>
     
+    <link rel="stylesheet" href="{% static 'dist/index.css' %}">
     {% block meta %}{% endblock %}
     {% block css %}{% endblock %}
     {% block extra_head %}{% endblock %}

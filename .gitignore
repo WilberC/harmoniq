@@ -155,3 +155,6 @@ theme/static_src/dist/
 # OS
 .DS_Store
 Thumbs.db
+
+# Node
+node_modules/
