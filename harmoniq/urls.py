@@ -8,8 +8,6 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('music.urls')),
-    path('api/', include('music.api_urls')),
     path("__reload__/", include("django_browser_reload.urls")),
 ]
 

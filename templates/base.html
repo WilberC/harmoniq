@@ -3,237 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Harmoniq{% endblock %}</title>
+    <title>{% block title %}Harmoniq - Music Playlist Manager{% endblock %}</title>
     
-    <!-- Tailwind CSS -->
-    {% load static tailwind_tags %}
-    {% tailwind_css %}
-    
-    <!-- Unpoly -->
-    <script src="https://unpkg.com/unpoly@3.7.3/dist/unpoly.min.js"></script>
-    <link rel="stylesheet" href="https://unpkg.com/unpkg.com/unpoly@3.7.3/dist/unpoly.min.css">
-    
-    <!-- Sortable.js -->
-    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
-    
-    <!-- Custom CSS -->
-    <style>
-        /* Custom scrollbar for macOS feel */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        
-        ::-webkit-scrollbar-track {
-            background: #f1f5f9;
-        }
-        
-        ::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 4px;
-        }
-        
-        ::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
-        }
-    </style>
-    
+    {% block meta %}{% endblock %}
+    {% block css %}{% endblock %}
     {% block extra_head %}{% endblock %}
 </head>
-<body class="bg-gray-50 font-sans">
-    <!-- Navigation -->
-    <nav class="bg-white shadow-sm border-b border-gray-200">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16">
-                <div class="flex items-center">
-                    <div class="flex-shrink-0">
-                        <h1 class="text-xl font-bold text-gray-900">Harmoniq</h1>
-                    </div>
-                </div>
-                
-                <div class="flex items-center space-x-4">
-                    {% if user.is_authenticated %}
-                        <a href="{% url 'music:music_services' %}" 
-                           class="text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
-                           up-target="main">
-                            Music Services
-                        </a>
-                        <span class="text-gray-500 text-sm">{{ user.username }}</span>
-                        <a href="{% url 'admin:logout' %}" 
-                           class="text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">
-                            Logout
-                        </a>
-                    {% else %}
-                        <a href="{% url 'admin:login' %}" 
-                           class="text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">
-                            Login
-                        </a>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Main Content -->
-    <div class="flex h-screen bg-gray-50">
-        <!-- Sidebar -->
-        <div class="sidebar">
-            <div class="p-4">
-                <h2 class="text-lg font-semibold text-gray-900 mb-4">Playlists</h2>
-                
-                <!-- Create Playlist Button -->
-                <button onclick="openCreatePlaylistModal()" 
-                        class="w-full btn-macos btn-macos-primary mb-4">
-                    <svg class="w-4 h-4 mr-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                    </svg>
-                    New Playlist
-                </button>
-                
-                <!-- Playlists List -->
-                <div id="playlists-sidebar" class="space-y-1">
-                    {% for playlist in playlists %}
-                        <a href="?playlist={{ playlist.id }}" 
-                           class="sidebar-item {% if selected_playlist.id == playlist.id %}active{% endif %}"
-                           up-target="main"
-                           up-push-url="true">
-                            <div class="color-indicator mr-3" style="background-color: {{ playlist.color }};"></div>
-                            <span class="flex-1">{{ playlist.name }}</span>
-                            <span class="text-xs text-gray-500">{{ playlist.track_count }}</span>
-                        </a>
-                    {% empty %}
-                        <p class="text-sm text-gray-500 px-4 py-2">No playlists yet</p>
-                    {% endfor %}
-                </div>
-            </div>
-        </div>
-
-        <!-- Main Content Area -->
-        <div class="flex-1 overflow-auto">
-            <main id="main" class="p-6">
-                {% block content %}{% endblock %}
-            </main>
-        </div>
-    </div>
-
-    <!-- Create Playlist Modal -->
-    <div id="createPlaylistModal" class="modal-overlay hidden">
-        <div class="modal-content">
-            <div class="p-6">
-                <h3 class="text-lg font-medium text-gray-900 mb-4">Create New Playlist</h3>
-                
-                <form method="post" action="{% url 'music:create_playlist' %}" up-target="main">
-                    {% csrf_token %}
-                    <div class="mb-4">
-                        <label for="playlist-name" class="form-label">Name</label>
-                        <input type="text" id="playlist-name" name="name" required class="form-input">
-                    </div>
-                    
-                    <div class="mb-4">
-                        <label for="playlist-description" class="form-label">Description (optional)</label>
-                        <textarea id="playlist-description" name="description" rows="3" class="form-input"></textarea>
-                    </div>
-                    
-                    <div class="mb-6">
-                        <label for="playlist-color" class="form-label">Color</label>
-                        <input type="color" id="playlist-color" name="color" value="#3B82F6" class="form-input h-10">
-                    </div>
-                    
-                    <div class="flex justify-end space-x-3">
-                        <button type="button" onclick="closeCreatePlaylistModal()" 
-                                class="btn-macos btn-macos-secondary">
-                            Cancel
-                        </button>
-                        <button type="submit" class="btn-macos btn-macos-primary">
-                            Create Playlist
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- JavaScript -->
-    <script>
-        // Modal functions
-        function openCreatePlaylistModal() {
-            document.getElementById('createPlaylistModal').classList.remove('hidden');
-        }
-        
-        function closeCreatePlaylistModal() {
-            document.getElementById('createPlaylistModal').classList.add('hidden');
-        }
-        
-        // Close modal when clicking outside
-        document.getElementById('createPlaylistModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeCreatePlaylistModal();
-            }
-        });
-        
-        // Initialize Sortable.js for playlists
-        document.addEventListener('DOMContentLoaded', function() {
-            const playlistsContainer = document.querySelector('.playlists-grid');
-            if (playlistsContainer) {
-                new Sortable(playlistsContainer, {
-                    animation: 150,
-                    ghostClass: 'sortable-ghost',
-                    chosenClass: 'sortable-chosen',
-                    onEnd: function(evt) {
-                        // Handle playlist reordering if needed
-                        console.log('Playlist reordered');
-                    }
-                });
-            }
-        });
-        
-        // Initialize Sortable.js for tracks
-        function initializeTrackSortable() {
-            const tracksContainer = document.querySelector('.tracks-grid');
-            if (tracksContainer) {
-                new Sortable(tracksContainer, {
-                    animation: 150,
-                    ghostClass: 'sortable-ghost',
-                    chosenClass: 'sortable-chosen',
-                    group: 'tracks', // Allow moving between playlists
-                    onEnd: function(evt) {
-                        const trackId = evt.item.dataset.trackId;
-                        const newPlaylistId = evt.to.dataset.playlistId;
-                        const newPosition = evt.newIndex + 1;
-                        
-                        // Call API to move track
-                        fetch('/api/tracks/move/', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
-                            },
-                            body: JSON.stringify({
-                                track_id: trackId,
-                                new_playlist_id: newPlaylistId,
-                                new_position: newPosition
-                            })
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.success) {
-                                console.log('Track moved successfully');
-                            } else {
-                                console.error('Error moving track:', data.error);
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);
-                        });
-                    }
-                });
-            }
-        }
-        
-        // Initialize track sortable when content loads
-        document.addEventListener('up:content:loaded', initializeTrackSortable);
-        document.addEventListener('DOMContentLoaded', initializeTrackSortable);
-    </script>
+<body>
+    {% block header %}{% endblock %}
     
+    {% block navigation %}{% endblock %}
+    
+    <div class="container">
+        {% block sidebar %}{% endblock %}
+        
+        <main>
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+    
+    {% block footer %}{% endblock %}
+    
+    {% block modals %}{% endblock %}
+    
+    {% block scripts %}{% endblock %}
     {% block extra_js %}{% endblock %}
 </body>
 </html>

@@ -9,11 +9,8 @@ packages = [{include = "harmoniq"}]
 [tool.poetry.dependencies]
 python = "^3.11"
 django = "^5.0"
-djangorestframework = "^3.14"
-django-cors-headers = "^4.3"
 requests = "^2.31"
 python-dotenv = "^1.0"
-django-tailwind = "^3.8"
 django-browser-reload = "^1.12"
 
 [tool.poetry.group.dev.dependencies]
