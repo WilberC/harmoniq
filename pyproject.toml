@@ -20,13 +20,14 @@ pytest = "^7.4"
 pytest-django = "^4.7"
 isort = "^5.13"
 pre-commit = "^3.6"
+autoflake = "^2.3"
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.black]
-line-length = 88
+line-length = 100
 target-version = ['py311']
 
 [tool.pytest.ini_options]

@@ -161,6 +161,9 @@ black .
 
 # Sort imports with isort
 isort .
+
+# Remove unused imports and variables with autoflake
+autoflake --remove-all-unused-imports --remove-unused-variables --in-place .
 ```
 
 #### Linting

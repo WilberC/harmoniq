@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Harmoniq - Music Playlist Manager{% endblock %}</title>
-    
+
     <link rel="stylesheet" href="{% static 'dist/index.css' %}">
     {% block meta %}{% endblock %}
     {% block css %}{% endblock %}
@@ -13,21 +13,21 @@
 </head>
 <body>
     {% block header %}{% endblock %}
-    
+
     {% block navigation %}{% endblock %}
-    
+
     <div class="container">
         {% block sidebar %}{% endblock %}
-        
+
         <main>
             {% block content %}{% endblock %}
         </main>
     </div>
-    
+
     {% block footer %}{% endblock %}
-    
+
     {% block modals %}{% endblock %}
-    
+
     {% block scripts %}{% endblock %}
     {% block extra_js %}{% endblock %}
 </body>

@@ -2,9 +2,10 @@
 Tests for the health check endpoint.
 """
 
-from django.test import TestCase, Client
-from django.urls import reverse
 import json
+
+from django.test import Client, TestCase
+from django.urls import reverse
 
 
 class HealthCheckTestCase(TestCase):
@@ -17,21 +18,21 @@ class HealthCheckTestCase(TestCase):
     def test_health_check_endpoint(self):
         """Test that the health check endpoint returns correct response."""
         response = self.client.get(reverse("health_check"))
-        
+
         # Check status code
         self.assertEqual(response.status_code, 200)
-        
+
         # Check content type
         self.assertEqual(response["Content-Type"], "application/json")
-        
+
         # Parse JSON response
         data = json.loads(response.content)
-        
+
         # Check response structure
         self.assertIn("status", data)
         self.assertIn("service", data)
         self.assertIn("version", data)
-        
+
         # Check expected values
         self.assertEqual(data["status"], "healthy")
         self.assertEqual(data["service"], "harmoniq")
