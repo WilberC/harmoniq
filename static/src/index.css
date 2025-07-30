@@ -2,6 +2,24 @@
 
 /* Desktop Custom Styles */
 
+/* Prevent text selection and blue shadow on double-click */
+* {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+*::selection {
+    background: transparent;
+}
+
+*::-moz-selection {
+    background: transparent;
+}
+
 /* Animated Background */
 body {
     font-family: BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
