@@ -91,7 +91,8 @@ function initializeModalCloseHandlers() {
 
             // Check if this is a close/cancel button (not a dock icon)
             if (this.classList.contains('modal-close') ||
-                (this.classList.contains('btn') && this.classList.contains('btn-secondary'))) {
+                (this.classList.contains('btn') && this.classList.contains('btn-secondary')) ||
+                (this.classList.contains('window-control') && (this.classList.contains('close') || this.classList.contains('minimize')))) {
                 closeModal(modalType);
             }
         });
