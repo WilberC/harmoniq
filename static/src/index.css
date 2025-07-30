@@ -31,6 +31,39 @@ body {
     }
 }
 
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes dockBounce {
+    0% {
+        transform: scale(1);
+    }
+    25% {
+        transform: scale(0.8);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    75% {
+        transform: scale(0.95);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.bounce-effect {
+    animation: dockBounce 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
 .animate-fade-in {
     animation: fadeIn 1s ease-out;
 }
@@ -70,7 +103,8 @@ body {
 }
 
 .dock {
-    @apply fixed right-5 top-1/2 transform -translate-y-1/2 bg-black/30 backdrop-blur-xl rounded-2xl px-4 py-2 flex flex-col gap-2 items-center z-50 border border-white/10 shadow-2xl;
+    @apply fixed right-5 top-1/2 transform -translate-y-1/2 bg-black/30 backdrop-blur-xl rounded-2xl px-4 py-2 flex flex-col gap-2 items-center border border-white/10 shadow-2xl;
+    z-index: 999;
 }
 
 .dock-icon {
@@ -113,6 +147,114 @@ body {
     @apply w-6 h-6 bg-white/70 rounded-md flex items-center justify-center text-xs font-bold text-black/70;
 }
 
+/* Modal Styles */
+.modal-container {
+    @apply fixed inset-0 z-[100];
+    pointer-events: none;
+}
+
+.modal-overlay {
+    @apply absolute inset-0;
+    pointer-events: auto;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.modal-overlay.active {
+    opacity: 1;
+}
+
+.modal {
+    @apply absolute top-1/2 left-1/2 bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/20 min-w-[400px] max-w-[500px] pointer-events-auto;
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.95);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 101;
+}
+
+.modal.active {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+/* Stack multiple modals with increasing z-index */
+.modal:nth-child(3).active {
+    z-index: 101;
+}
+
+.modal:nth-child(4).active {
+    z-index: 102;
+}
+
+.modal:nth-child(5).active {
+    z-index: 103;
+}
+
+.modal:nth-child(6).active {
+    z-index: 104;
+}
+
+.modal:nth-child(7).active {
+    z-index: 105;
+}
+
+.modal-header {
+    @apply flex justify-between items-center p-6 border-b border-gray-200/50;
+}
+
+.modal-title {
+    @apply text-xl font-semibold text-gray-800;
+}
+
+.modal-close {
+    @apply w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-600 hover:text-gray-800 transition-colors duration-200 text-xl font-light;
+}
+
+.modal-content {
+    @apply p-6;
+}
+
+.modal-content p {
+    @apply text-gray-600 mb-6;
+}
+
+.modal-actions {
+    @apply flex gap-3 justify-end;
+}
+
+.btn {
+    @apply px-4 py-2 rounded-lg font-medium transition-all duration-200;
+}
+
+.btn-primary {
+    @apply bg-blue-600 text-white hover:bg-blue-700 shadow-sm;
+}
+
+.btn-secondary {
+    @apply bg-gray-100 text-gray-700 hover:bg-gray-200;
+}
+
+/* Settings Modal Specific Styles */
+.settings-section {
+    @apply mb-6;
+}
+
+.settings-section h3 {
+    @apply text-lg font-medium text-gray-800 mb-4;
+}
+
+.setting-item {
+    @apply flex justify-between items-center mb-4;
+}
+
+.setting-item label {
+    @apply text-gray-700 font-medium;
+}
+
+.setting-input {
+    @apply px-3 py-2 border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .dock {
@@ -147,5 +289,19 @@ body {
 
     .welcome-text {
         font-size: 2rem;
+    }
+
+    .modal {
+        min-width: 90vw;
+        max-width: 90vw;
+        margin: 1rem;
+    }
+
+    .modal-actions {
+        @apply flex-col;
+    }
+
+    .setting-item {
+        @apply flex-col items-start gap-2;
     }
 }

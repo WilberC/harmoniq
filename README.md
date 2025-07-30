@@ -16,7 +16,7 @@ A music playlist management web application with a macOS Finder-like interface, 
 
 - **Backend**: Django 5.0
 - **Database**: SQLite
-- **Frontend**: Tailwind CSS, Unpoly, Sortable.js
+- **Frontend**: Tailwind CSS, Unpoly, Sortable.js, Interact.js
 - **Package Management**: Poetry (Python), npm (Tailwind CSS)
 - **Authentication**: OAuth for music services
 

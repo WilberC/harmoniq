@@ -25,28 +25,31 @@
 
 <!-- Dock -->
 <div class="dock">
-    <div class="dock-icon dock-icon-styled">
+    <div class="dock-icon dock-icon-styled" data-modal="tidal">
         <img src="{% static 'src/images/streaming_services/tidal.svg' %}" alt="tidal" class="dock-icon-img">
     </div>
-    <div class="dock-icon dock-icon-styled">
+    <div class="dock-icon dock-icon-styled" data-modal="spotify">
         <img src="{% static 'src/images/streaming_services/spotify_alt.svg' %}" alt="spotify" class="dock-icon-img">
     </div>
-    <div class="dock-icon dock-icon-styled">
+    <div class="dock-icon dock-icon-styled" data-modal="youtube_music">
         <img src="{% static 'src/images/streaming_services/youtube_music.svg' %}" alt="youtube_music" class="dock-icon-img">
     </div>
-    <div class="dock-icon dock-icon-styled">
+    <div class="dock-icon dock-icon-styled" data-modal="apple_music">
         <img src="{% static 'src/images/streaming_services/apple_music.svg' %}" alt="apple_music" class="dock-icon-img">
     </div>
-    <div class="dock-icon dock-icon-styled">
+    <div class="dock-icon dock-icon-styled" data-modal="qobuz">
         <img src="{% static 'src/images/streaming_services/qobuz.png' %}" alt="qobuz" class="dock-icon-img">
     </div>
-    <div class="dock-icon dock-icon-styled">
+    <div class="dock-icon dock-icon-styled" data-modal="settings">
         <img src="{% static 'src/images/settings.png' %}" alt="settings" class="dock-icon-img">
-        <div class="icon-shine"></div>
     </div>
 </div>
+
+<!-- Include Modal Component -->
+{% include 'components/modal.html' %}
 {% endblock %}
 
 {% block scripts %}
 <script src="{% static 'src/js/desktop.js' %}"></script>
+<script src="https://unpkg.com/interactjs/dist/interact.min.js"></script>
 {% endblock %}

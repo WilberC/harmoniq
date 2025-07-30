@@ -1,0 +1,32 @@
+<!-- Settings Modal -->
+<div class="modal" id="settings-modal">
+    <div class="modal-header">
+        <h2 class="modal-title">Settings</h2>
+        <button class="modal-close" data-modal="settings">&times;</button>
+    </div>
+    <div class="modal-content">
+        <div class="settings-section">
+            <h3>General</h3>
+            <div class="setting-item">
+                <label>Theme</label>
+                <select class="setting-input">
+                    <option>Light</option>
+                    <option selected>Dark</option>
+                    <option>Auto</option>
+                </select>
+            </div>
+            <div class="setting-item">
+                <label>Language</label>
+                <select class="setting-input">
+                    <option selected>English</option>
+                    <option>Spanish</option>
+                    <option>French</option>
+                </select>
+            </div>
+        </div>
+        <div class="modal-actions">
+            <button class="btn btn-primary">Save Settings</button>
+            <button class="btn btn-secondary" data-modal="settings">Cancel</button>
+        </div>
+    </div>
+</div>
