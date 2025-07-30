@@ -1,32 +1,77 @@
+{% load static %}
+
 <!-- Settings Modal -->
 <div class="modal" id="settings-modal">
     <div class="modal-header">
-        <h2 class="modal-title">Settings</h2>
-        <button class="modal-close" data-modal="settings">&times;</button>
+        <div class="window-controls">
+            <button class="window-control close" data-modal="settings"></button>
+            <button class="window-control minimize"></button>
+            <button class="window-control maximize"></button>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="modal-tabs-container">
+            <div class="modal-tabs">
+                <button class="tab active">Overview</button>
+                <button class="tab">Streaming Services</button>
+                <button class="tab">Status</button>
+            </div>
+        </div>
     </div>
+
+
     <div class="modal-content">
-        <div class="settings-section">
-            <h3>General</h3>
-            <div class="setting-item">
-                <label>Theme</label>
-                <select class="setting-input">
-                    <option>Light</option>
-                    <option selected>Dark</option>
-                    <option>Auto</option>
-                </select>
+        <div class="about-content">
+            <!-- Left Section - Circular Image -->
+            <div class="about-image-section">
+                <div class="circular-image">
+                    <img src="{% static 'src/images/profile.png' %}" alt="Harmoniq">
+                </div>
             </div>
-            <div class="setting-item">
-                <label>Language</label>
-                <select class="setting-input">
-                    <option selected>English</option>
-                    <option>Spanish</option>
-                    <option>French</option>
-                </select>
+
+            <!-- Right Section - System Information -->
+            <div class="about-info-section">
+                <h1 class="system-title">Harmoniq</h1>
+                <p class="system-version">Version 1.0.0</p>
+
+                <div class="system-specs">
+                    <div class="spec-item">
+                        <span class="spec-label">Application</span>
+                        <span class="spec-value">Harmoniq Music Manager</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">Platform</span>
+                        <span class="spec-value">Web Application</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">Framework</span>
+                        <span class="spec-value">Django & JavaScript</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">Theme</span>
+                        <span class="spec-value">Dark Mode</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">Language</span>
+                        <span class="spec-value">English</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">Build</span>
+                        <span class="spec-value">2025.1.0</span>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="about-actions">
+                    <button class="btn btn-secondary">Repository...</button>
+                    <button class="btn btn-secondary">Validate Credentials...</button>
+                </div>
             </div>
         </div>
-        <div class="modal-actions">
-            <button class="btn btn-primary">Save Settings</button>
-            <button class="btn btn-secondary" data-modal="settings">Cancel</button>
-        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="modal-footer">
+        <p class="copyright">© 2025 Harmoniq. All Rights Reserved.</p>
     </div>
 </div>
