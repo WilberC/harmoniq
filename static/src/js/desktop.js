@@ -1,3 +1,5 @@
+import initializeDraggable from './draggable.js';
+
 // Desktop JavaScript Functionality
 
 function updateDateTime() {
@@ -132,6 +134,9 @@ function initializeDesktop() {
 
     // Initialize modal close handlers
     initializeModalCloseHandlers();
+
+    // Initialize draggable
+    initializeDraggable();
 }
 
 // Initialize when DOM is loaded
