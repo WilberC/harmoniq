@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% load static %}
+{% block header %}
+{% endblock %}
+
+{% block content %}
+<div class="container flex">
+  <!-- Left Side Navbar -->
+  <nav class="left-navbar w-16 bg-gray-800 flex flex-col items-center py-4 space-y-4">
+    <div class="nav-item p-2 hover:bg-gray-700 rounded cursor-pointer" data-service="tidal">
+      <img src="{% static 'src/images/streaming_services/tidal.svg' %}" alt="Tidal" class="w-8 h-8">
+    </div>
+    <div class="nav-item p-2 hover:bg-gray-700 rounded cursor-pointer" data-service="spotify">
+      <img src="{% static 'src/images/streaming_services/spotify_alt.svg' %}" alt="Spotify" class="w-8 h-8">
+    </div>
+    <div class="nav-item p-2 hover:bg-gray-700 rounded cursor-pointer" data-service="youtube_music">
+      <img src="{% static 'src/images/streaming_services/youtube_music.svg' %}" alt="YouTube Music" class="w-8 h-8">
+    </div>
+    <div class="nav-item p-2 hover:bg-gray-700 rounded cursor-pointer" data-service="apple_music">
+      <img src="{% static 'src/images/streaming_services/apple_music.svg' %}" alt="Apple Music" class="w-8 h-8">
+    </div>
+    <div class="nav-item p-2 hover:bg-gray-700 rounded cursor-pointer" data-service="qobuz">
+      <img src="{% static 'src/images/streaming_services/qobuz.png' %}" alt="Qobuz" class="w-8 h-8">
+    </div>
+  </nav>
+
+  <!-- Main Content Area -->
+  <main class="main-content flex-1 p-4">
+    <input type="text" placeholder="Search..." class="w-full p-2 mb-4 border border-gray-300 rounded">
+    <section id="content-section">
+      <!-- Content will be rendered here -->
+    </section>
+  </main>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{% endblock %}

@@ -1,54 +1,54 @@
 {% extends "base.html" %}
 {% load static %}
 
+{% block header %}
+<!-- Navbar -->
+<nav class="bg-gray-900 text-white p-4 flex justify-between items-center">
+  <div class="flex items-center">
+    <h1 class="text-xl font-bold">Harmoniq</h1>
+  </div>
+  <div class="flex items-center space-x-4">
+    <span id="toggle-label" class="text-sm font-medium text-gray-900 dark:text-gray-300">v1</span>
+    <label class="inline-flex items-center cursor-pointer">
+      <input type="checkbox" id="version-toggle" class="sr-only peer">
+      <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600 dark:peer-checked:bg-blue-600"></div>
+    </label>
+    <span id="toggle-label-right" class="text-sm font-medium text-gray-900 dark:text-gray-300">v2</span>
+  </div>
+</nav>
+{% endblock %}
+
 {% block content %}
-<!-- Top Menu Bar -->
-<div class="menu-bar">
-    <div class="menu-bar-content">
-        <div class="flex items-center">
-            <div class="logo">
-                <div class="logo-bg">
-                    <img src="{% static 'src/images/logo.svg' %}" alt="Logo" class="logo-icon">
-                </div>
-            </div>
-        </div>
-        <div class="flex items-center gap-4">
-            <div class="date-time" id="dateTime"></div>
-        </div>
-    </div>
-</div>
-
-<!-- Desktop Content -->
-<div class="absolute top-8 left-0 right-24 bottom-0 flex items-center justify-center z-10">
-    <h1 class="welcome-text">Harmoniq</h1>
-</div>
-
-<!-- Dock -->
-<div class="dock">
-    <div class="dock-icon dock-icon-styled" data-modal="tidal">
-        <img src="{% static 'src/images/streaming_services/tidal.svg' %}" alt="tidal" class="dock-icon-img">
-    </div>
-    <div class="dock-icon dock-icon-styled" data-modal="spotify">
-        <img src="{% static 'src/images/streaming_services/spotify_alt.svg' %}" alt="spotify" class="dock-icon-img">
-    </div>
-    <div class="dock-icon dock-icon-styled" data-modal="youtube_music">
-        <img src="{% static 'src/images/streaming_services/youtube_music.svg' %}" alt="youtube_music" class="dock-icon-img">
-    </div>
-    <div class="dock-icon dock-icon-styled" data-modal="apple_music">
-        <img src="{% static 'src/images/streaming_services/apple_music.svg' %}" alt="apple_music" class="dock-icon-img">
-    </div>
-    <div class="dock-icon dock-icon-styled" data-modal="qobuz">
-        <img src="{% static 'src/images/streaming_services/qobuz.png' %}" alt="qobuz" class="dock-icon-img">
-    </div>
-    <div class="dock-icon dock-icon-styled" data-modal="settings">
-        <img src="{% static 'src/images/settings.png' %}" alt="settings" class="dock-icon-img">
-    </div>
-</div>
-
-<!-- Include Modal Component -->
-{% include 'components/modal.html' %}
+<!-- Main Content Section -->
+<main id="main-content" class="flex-1 p-4">
+  <!-- Content will be rendered here based on toggle -->
+</main>
 {% endblock %}
 
 {% block scripts %}
-<script type="module" src="{% static 'src/js/desktop.js' %}"></script>
+<script>
+  const toggle = document.getElementById('version-toggle');
+  const mainContent = document.getElementById('main-content');
+  const labelLeft = document.getElementById('toggle-label');
+  const labelRight = document.getElementById('toggle-label-right');
+
+  // Default to v1
+  let currentVersion = 'v1';
+
+  toggle.addEventListener('change', function() {
+    if (this.checked) {
+      currentVersion = 'v2';
+      // Load v2 content
+      // For now, just clear and add placeholder
+      mainContent.innerHTML = '<p>Loading v2...</p>';
+    } else {
+      currentVersion = 'v1';
+      // Load v1 content
+      mainContent.innerHTML = '<p>Loading v1...</p>';
+    }
+  });
+
+  // Initial load
+  mainContent.innerHTML = '<p>Loading v1...</p>';
+</script>
 {% endblock %}
