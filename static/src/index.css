@@ -88,7 +88,7 @@ body {
 
 /* Custom Component Classes */
 .menu-bar {
-    @apply fixed top-0 left-0 right-0 h-8 bg-black/30 backdrop-blur-xl border-b border-white/10 z-50 flex justify-center items-center;
+    @apply top-0 left-0 right-0 h-8 bg-black/30 backdrop-blur-xl border-b border-white/10 z-50 flex justify-center items-center;
 }
 
 .menu-bar-content {
@@ -172,7 +172,6 @@ body {
 }
 
 .modal-overlay {
-    @apply absolute inset-0;
     pointer-events: auto;
     opacity: 0;
     transition: opacity 0.3s ease;
