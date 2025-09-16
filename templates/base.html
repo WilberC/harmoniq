@@ -7,6 +7,8 @@
     <title>{% block title %}Harmoniq - Music Playlist Manager{% endblock %}</title>
 
     <link rel="stylesheet" href="{% static 'dist/index.css' %}">
+    <script src="https://cdn.jsdelivr.net/npm/unpoly@3.11.0/unpoly.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/unpoly@3.11.0/unpoly.min.css">
     {% block meta %}{% endblock %}
     {% block css %}{% endblock %}
     {% block extra_head %}{% endblock %}
@@ -27,6 +29,9 @@
     {% block footer %}{% endblock %}
 
     {% block modals %}{% endblock %}
+    <script>
+        // up.log.enable();
+    </script>
 
     {% block scripts %}{% endblock %}
     {% block extra_js %}{% endblock %}

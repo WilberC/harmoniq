@@ -11,7 +11,9 @@
     <span id="toggle-label" class="text-sm font-medium text-gray-900 dark:text-gray-300">v1</span>
     <label class="inline-flex items-center cursor-pointer">
       <input type="checkbox" id="version-toggle" class="sr-only peer">
-      <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600 dark:peer-checked:bg-blue-600"></div>
+      <div
+        class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600 dark:peer-checked:bg-blue-600">
+      </div>
     </label>
     <span id="toggle-label-right" class="text-sm font-medium text-gray-900 dark:text-gray-300">v2</span>
   </div>
@@ -20,9 +22,9 @@
 
 {% block content %}
 <!-- Main Content Section -->
-<main id="main-content" class="flex-1 p-4">
+<section id="main-content" class="flex-1 p-4">
   <!-- Content will be rendered here based on toggle -->
-</main>
+</section>
 {% endblock %}
 
 {% block scripts %}
@@ -35,20 +37,20 @@
   // Default to v1
   let currentVersion = 'v1';
 
-  toggle.addEventListener('change', function() {
+  // Initial load
+  up.render('#main-content', { url: '/v1/' });
+  console.log('Loaded v1 content');
+
+  toggle.addEventListener('change', function () {
     if (this.checked) {
       currentVersion = 'v2';
       // Load v2 content
-      // For now, just clear and add placeholder
-      mainContent.innerHTML = '<p>Loading v2...</p>';
+      up.render('#main-content', { url: '/v2/' });
     } else {
       currentVersion = 'v1';
       // Load v1 content
-      mainContent.innerHTML = '<p>Loading v1...</p>';
+      up.render('#main-content', { url: '/v1/' });
     }
   });
-
-  // Initial load
-  mainContent.innerHTML = '<p>Loading v1...</p>';
 </script>
 {% endblock %}

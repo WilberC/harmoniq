@@ -28,10 +28,18 @@ class IndexView(TemplateView):
 
     template_name = "index.html"
 
-    def get_context_data(self, **kwargs):
-        """
-        Add context data to the template.
-        """
-        context = super().get_context_data(**kwargs)
-        context["title"] = "Harmoniq"
-        return context
+
+class V1View(TemplateView):
+    """
+    Render the v1 template.
+    """
+
+    template_name = "v1/index_v1.html"
+
+
+class V2View(TemplateView):
+    """
+    Render the v2 template.
+    """
+
+    template_name = "v2/index_v2.html"
