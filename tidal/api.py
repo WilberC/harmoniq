@@ -1,5 +1,6 @@
 import base64
 import hashlib
+import logging
 import os
 import secrets
 import time
@@ -10,6 +11,8 @@ import requests
 from django.utils import timezone
 
 from .models import TidalToken
+
+logger = logging.getLogger(__name__)
 
 
 class TidalTokenManager:
@@ -74,17 +77,50 @@ class TidalTokenManager:
 
     def get_user_token(self, user):
         """
-        Returns the current valid access token for a user, fetching a new one if necessary.
+        Returns the current valid access token for a user, refreshing if necessary.
         """
         try:
             tidal_token = TidalToken.objects.get(user=user)
-            if tidal_token.is_expired():
-                # Token is expired, need to refresh
-                # For now, we'll just return None and let the caller handle refresh
-                # In a full implementation, you'd implement refresh token logic here
-                return None
+
+            # Check if token is expired or will expire in the next 5 minutes
+            current_time = timezone.now()
+            buffer_time = timedelta(minutes=5)
+
+            if tidal_token.is_expired() or tidal_token.expires_at <= current_time + buffer_time:
+                # Token is expired or will expire soon, try to refresh
+                if tidal_token.refresh_token:
+                    try:
+                        logger.info(f"Refreshing expired token for user: {user.username}")
+                        oauth_manager = TidalOAuthManager()
+                        new_token_data = oauth_manager.refresh_access_token(
+                            tidal_token.refresh_token
+                        )
+
+                        # Update the token in database
+                        tidal_token.access_token = new_token_data["access_token"]
+                        if new_token_data.get("refresh_token"):
+                            tidal_token.refresh_token = new_token_data["refresh_token"]
+                        tidal_token.expires_at = timezone.now() + timedelta(
+                            seconds=new_token_data["expires_in"]
+                        )
+                        tidal_token.save()
+
+                        logger.info(f"Token refreshed successfully for user: {user.username}")
+                        return f"Bearer {tidal_token.access_token}"
+
+                    except Exception as e:
+                        logger.error(f"Failed to refresh token for user {user.username}: {e}")
+                        # If refresh fails, return None to indicate token is invalid
+                        return None
+                else:
+                    # No refresh token available
+                    logger.warning(f"No refresh token available for user: {user.username}")
+                    return None
+
             return f"Bearer {tidal_token.access_token}"
+
         except TidalToken.DoesNotExist:
+            logger.info(f"No Tidal token found for user: {user.username}")
             return None
 
     def save_user_token(self, user, token_data):
@@ -110,6 +146,69 @@ class TidalTokenManager:
             tidal_token.save()
 
         return tidal_token
+
+    def refresh_user_token(self, user):
+        """
+        Manually refresh a user's access token.
+        Returns True if successful, False if refresh token is invalid/expired.
+        """
+        try:
+            tidal_token = TidalToken.objects.get(user=user)
+
+            if not tidal_token.refresh_token:
+                logger.warning(f"No refresh token available for user: {user.username}")
+                return False
+
+            try:
+                logger.info(f"Manually refreshing token for user: {user.username}")
+                oauth_manager = TidalOAuthManager()
+                new_token_data = oauth_manager.refresh_access_token(tidal_token.refresh_token)
+
+                # Update the token in database
+                tidal_token.access_token = new_token_data["access_token"]
+                if new_token_data.get("refresh_token"):
+                    tidal_token.refresh_token = new_token_data["refresh_token"]
+                tidal_token.expires_at = timezone.now() + timedelta(
+                    seconds=new_token_data["expires_in"]
+                )
+                tidal_token.save()
+
+                logger.info(f"Token refreshed successfully for user: {user.username}")
+                return True
+
+            except requests.exceptions.HTTPError as e:
+                if e.response.status_code == 400:
+                    # Refresh token is likely expired or invalid
+                    logger.warning(f"Refresh token expired for user: {user.username}")
+                    # Optionally delete the invalid token
+                    tidal_token.delete()
+                else:
+                    logger.error(f"HTTP error during token refresh for user {user.username}: {e}")
+                return False
+
+            except Exception as e:
+                logger.error(f"Failed to refresh token for user {user.username}: {e}")
+                return False
+
+        except TidalToken.DoesNotExist:
+            logger.info(f"No Tidal token found for user: {user.username}")
+            return False
+
+    def get_valid_user_token(self, user):
+        """
+        Gets a valid access token for a user, handling refresh automatically.
+        This is the main method API consumers should use.
+        Returns the token string or None if no valid token available.
+        """
+        token = self.get_user_token(user)
+        if token:
+            return token
+
+        # If get_user_token returned None, try manual refresh
+        if self.refresh_user_token(user):
+            return self.get_user_token(user)
+
+        return None
 
 
 class PKCE:
@@ -227,3 +326,51 @@ class TidalOAuthManager:
             "token_type": token_data.get("token_type", "Bearer"),
             "scope": token_data.get("scope"),
         }
+
+    def refresh_access_token(self, refresh_token):
+        """
+        Refreshes an access token using a refresh token.
+        """
+        if not all([self.client_id, self.client_secret, self.token_url]):
+            raise ValueError("TIDAL_CLIENT_ID, TIDAL_CLIENT_SECRET, and TIDAL_AUTH must be set")
+
+        headers = {
+            "Content-Type": "application/x-www-form-urlencoded",
+        }
+
+        data = {
+            "grant_type": "refresh_token",
+            "refresh_token": refresh_token,
+            "client_id": self.client_id,
+        }
+
+        response = requests.post(self.token_url, headers=headers, data=data)
+        response.raise_for_status()
+
+        token_data = response.json()
+
+        # Validate required fields
+        access_token = token_data.get("access_token")
+        new_refresh_token = token_data.get("refresh_token")  # May be None if not provided
+        expires_in = token_data.get("expires_in", 86400)  # Default 24 hours
+
+        if not access_token:
+            raise ValueError("No access_token in refresh response")
+
+        return {
+            "access_token": access_token,
+            "refresh_token": new_refresh_token
+            or refresh_token,  # Use new one if provided, otherwise keep old
+            "expires_in": expires_in,
+            "token_type": token_data.get("token_type", "Bearer"),
+            "scope": token_data.get("scope"),
+        }
+
+
+def get_tidal_token_for_user(user):
+    """
+    Helper function to get a valid Tidal access token for a user.
+    Automatically handles token refresh if needed.
+    """
+    token_manager = TidalTokenManager()
+    return token_manager.get_valid_user_token(user)
