@@ -34,7 +34,7 @@ THIRD_PARTY_APPS = [
     "django_browser_reload",
 ]
 
-LOCAL_APPS = []
+LOCAL_APPS = ["tidal"]
 
 # Application definition
 INSTALLED_APPS = [
