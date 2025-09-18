@@ -141,12 +141,6 @@ CORS_ALLOWED_ORIGINS = [
 # Tailwind CSS
 TAILWIND_APP_NAME = "theme"
 
-# Music API settings
-TIDAL_CLIENT_ID = os.getenv("TIDAL_CLIENT_ID", "")
-TIDAL_CLIENT_SECRET = os.getenv("TIDAL_CLIENT_SECRET", "")
-SPOTIFY_CLIENT_ID = os.getenv("SPOTIFY_CLIENT_ID", "")
-SPOTIFY_CLIENT_SECRET = os.getenv("SPOTIFY_CLIENT_SECRET", "")
-
 # CSRF settings for AJAX requests
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:8000",

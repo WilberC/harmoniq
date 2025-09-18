@@ -1,8 +1,8 @@
 import base64
+import os
 import time
 
 import requests
-from django.conf import settings
 
 
 class TidalTokenManager:
@@ -11,9 +11,9 @@ class TidalTokenManager:
     """
 
     def __init__(self):
-        self.client_id = settings.TIDAL_CLIENT_ID
-        self.client_secret = settings.TIDAL_CLIENT_SECRET
-        self.token_url = settings.TIDAL_AUTH
+        self.client_id = os.getenv("TIDAL_CLIENT_ID")
+        self.client_secret = os.getenv("TIDAL_CLIENT_SECRET")
+        self.token_url = os.getenv("TIDAL_AUTH")
         self._access_token = None
         self._token_type = None
         self._expiry_time = None
