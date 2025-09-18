@@ -51,5 +51,10 @@
       up.render('#main-content', { url: '/v1/' });
     }
   });
+
+  const loginTidal = () => {
+    console.log("Redirecting to Tidal login...");
+    window.location.href = "{% url 'tidal:tidal_login' %}";
+  }
 </script>
 {% endblock %}

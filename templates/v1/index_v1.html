@@ -25,14 +25,17 @@
       </div>
     </nav>
 
-    <!-- Main Content Area -->
-    <input type="text" placeholder="Search..." class="w-7xl p-2 mx-4 my-4 border border-gray-300 rounded ml-auto mr-auto">
-    <section id="content-section">
-      <!-- Content will be rendered here -->
-    </section>
+    <div class="flex-1 flex flex-col h-full">
+      <!-- Main Content Area -->
+      <input type="text" placeholder="Search..."
+        class="w-7xl p-2 mx-4 my-4 border border-gray-300 rounded ml-auto mr-auto">
+      <section id="content-section" class="bg-gray-800 h-3/4 mx-8 mb-8 rounded p-4 text-white">
+        <button class="bg-blue-600 text-white px-4 py-2 rounded mr-4 cursor-pointer" onclick="loginTidal()">Login to
+          Tidal</button>
+        </script>
+        <!-- Content will be rendered here -->
+      </section>
+    </div>
   </div>
 </section>
-{% endblock %}
-
-{% block scripts %}
 {% endblock %}

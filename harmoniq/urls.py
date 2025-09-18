@@ -16,6 +16,7 @@ urlpatterns = [
     path("", IndexView.as_view(), name="index"),
     path("v1/", V1View.as_view(), name="v1"),
     path("v2/", V2View.as_view(), name="v2"),
+    path("tidal/", include("tidal.urls"), name="tidal"),
 ]
 
 if settings.DEBUG:
