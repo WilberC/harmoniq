@@ -1,3 +1,5 @@
+import logging
+
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseBadRequest
 from django.shortcuts import redirect
@@ -5,6 +7,8 @@ from django.urls import reverse
 from django.views.decorators.http import require_GET
 
 from .api import TidalOAuthManager, TidalTokenManager
+
+logger = logging.getLogger(__name__)
 
 
 def auto_login_test_user(request):
@@ -35,7 +39,10 @@ def tidal_login(request):
         request.session["tidal_code_verifier"] = code_verifier
         request.session["tidal_state"] = state
 
-        print(f"Redirecting to Tidal authorization URL: {authorization_url}")
+        logger.info(f"Tidal login initiated. URL: {authorization_url}")
+        logger.info(f"Code verifier stored in session: {code_verifier[:10]}...")
+        logger.info(f"State stored in session: {state[:10]}...")
+
         return redirect(authorization_url)
 
     except ValueError as e:
@@ -57,15 +64,21 @@ def tidal_callback(request):
 
     # Check for errors
     if error:
+        logger.error(f"Tidal OAuth error: {error} - {error_description}")
         return HttpResponseBadRequest(f"Tidal OAuth error: {error} - {error_description}")
 
     if not authorization_code:
+        logger.error("No authorization code received in callback")
         return HttpResponseBadRequest("No authorization code received")
 
     # Validate state parameter
     session_state = request.session.get("tidal_state")
     if not session_state or state != session_state:
+        logger.error(f"State mismatch. Received: {state}, Expected: {session_state}")
         return HttpResponseBadRequest("Invalid state parameter")
+
+    logger.info(f"Authorization code received: {authorization_code[:10]}...")
+    logger.info("State validation successful")
 
     # Get code verifier from session
     code_verifier = request.session.get("tidal_code_verifier")
@@ -81,13 +94,21 @@ def tidal_callback(request):
     token_manager = TidalTokenManager()
 
     try:
+        logger.info(f"Exchanging code for tokens with verifier: {code_verifier[:10]}...")
         token_data = oauth_manager.exchange_code_for_token(authorization_code, code_verifier)
+
+        logger.info(
+            f"Token exchange successful. Access token: {token_data.get('access_token', '')[:10]}..."
+        )
 
         # Save tokens to database
         token_manager.save_user_token(request.user, token_data)
+
+        logger.info(f"Tokens saved for user: {request.user.username}")
 
         # Redirect to success page (you can customize this)
         return redirect(reverse("index"))  # or wherever you want to redirect after successful auth
 
     except Exception as e:
+        logger.error(f"Token exchange failed: {e}")
         return HttpResponseBadRequest(f"Token exchange failed: {e}")
