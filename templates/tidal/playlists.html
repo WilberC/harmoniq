@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block title %}My Tidal Playlists{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50 py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Header -->
+        <div class="mb-8">
+            <div class="flex items-center space-x-2 text-sm text-gray-600 mb-4">
+                <a href="{% url 'index' %}" class="hover:text-blue-600">Home</a>
+                <span>/</span>
+                <span class="text-gray-900 font-medium">{{ current_path }}</span>
+            </div>
+            <h1 class="text-3xl font-bold text-gray-900">My Tidal Playlists</h1>
+            <p class="mt-2 text-gray-600">Browse and explore your music collections</p>
+        </div>
+
+        <!-- Playlists Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {% for playlist in playlists %}
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200 overflow-hidden">
+                <!-- Playlist Cover -->
+                <div class="aspect-square bg-gradient-to-br from-blue-400 to-purple-600 relative">
+                    {% if playlist.attributes.imageLinks %}
+                        <img src="{{ playlist.attributes.imageLinks.0.href }}"
+                             alt="{{ playlist.attributes.title }}"
+                             class="w-full h-full object-cover">
+                    {% else %}
+                        <!-- Default folder icon -->
+                        <div class="w-full h-full flex items-center justify-center">
+                            <svg class="w-16 h-16 text-white opacity-80" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M2 6a2 2 0 012-2h5a2 2 0 012 2v2H2V6zM2 10v6a2 2 0 002 2h10a2 2 0 002-2V10H2z"/>
+                            </svg>
+                        </div>
+                    {% endif %}
+
+                    <!-- Play button overlay -->
+                    <div class="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-30 transition-all duration-200 flex items-center justify-center">
+                        <a href="{% url 'playlist_tracks' playlist.id %}"
+                           class="opacity-0 hover:opacity-100 bg-white bg-opacity-90 rounded-full p-3 transition-all duration-200 hover:scale-110">
+                            <svg class="w-6 h-6 text-gray-900" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Playlist Info -->
+                <div class="p-4">
+                    <h3 class="font-semibold text-gray-900 text-sm mb-1 truncate">
+                        {{ playlist.attributes.title }}
+                    </h3>
+                    <p class="text-xs text-gray-500 mb-2">
+                        {{ playlist.attributes.numberOfTracks }} tracks
+                    </p>
+                    <p class="text-xs text-gray-400 line-clamp-2">
+                        {{ playlist.attributes.description|truncatechars:80|default:"" }}
+                    </p>
+                </div>
+
+                <!-- Clickable area -->
+                <a href="{% url 'playlist_tracks' playlist.id %}"
+                   class="absolute inset-0 z-10"
+                   aria-label="Open playlist {{ playlist.attributes.title }}"></a>
+            </div>
+            {% empty %}
+            <div class="col-span-full text-center py-12">
+                <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+                </svg>
+                <h3 class="mt-2 text-sm font-medium text-gray-900">No playlists found</h3>
+                <p class="mt-1 text-sm text-gray-500">Get started by creating your first playlist in Tidal.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

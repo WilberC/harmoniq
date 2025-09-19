@@ -1,12 +1,13 @@
 import logging
 
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseBadRequest
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.views.decorators.http import require_GET
 
-from .api import TidalOAuthManager, TidalTokenManager
+from .api import TidalAPIClient, TidalOAuthManager, TidalTokenManager
 
 logger = logging.getLogger(__name__)
 
@@ -103,6 +104,7 @@ def tidal_callback(request):
 
         # Save tokens to database
         token_manager.save_user_token(request.user, token_data)
+        token_manager.save_tidal_user_id(request.user)
 
         logger.info(f"Tokens saved for user: {request.user.username}")
 
@@ -112,3 +114,46 @@ def tidal_callback(request):
     except Exception as e:
         logger.error(f"Token exchange failed: {e}")
         return HttpResponseBadRequest(f"Token exchange failed: {e}")
+
+
+def user_playlists(request):
+    """
+    Display user's Tidal playlists in a folder-like interface.
+    """
+    try:
+        api_client = TidalAPIClient()
+        playlists = api_client.get_user_playlists(request.user)
+
+        context = {"playlists": playlists, "current_path": "My Playlists"}
+        return render(request, "tidal/playlists.html", context)
+
+    except Exception as e:
+        logger.error(f"Failed to fetch playlists for user {request.user.username}: {e}")
+        messages.error(request, f"Failed to load playlists: {e}")
+        return redirect("index")
+
+
+def playlist_tracks(request, playlist_id):
+    """
+    Display tracks from a specific playlist.
+    """
+    try:
+        api_client = TidalAPIClient()
+
+        # Get playlist details and tracks
+        playlist_details = api_client.get_playlist_details(request.user, playlist_id)
+        tracks = api_client.get_playlist_tracks(request.user, playlist_id)
+
+        context = {
+            "playlist": playlist_details,
+            "tracks": tracks,
+            "current_path": f"My Playlists / {playlist_details.get('title', 'Unknown Playlist')}",
+            "playlist_id": playlist_id,
+        }
+
+        return render(request, "tidal/playlist_tracks.html", context)
+
+    except Exception as e:
+        logger.error(f"Failed to fetch playlist tracks for playlist {playlist_id}: {e}")
+        messages.error(request, f"Failed to load playlist: {e}")
+        return redirect("tidal_playlists")

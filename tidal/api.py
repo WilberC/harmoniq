@@ -147,6 +147,33 @@ class TidalTokenManager:
 
         return tidal_token
 
+    def save_tidal_user_id(self, user):
+        """
+        Saves or updates the user's Tidal user ID in the database.
+        """
+        tidal_token = TidalToken.objects.get(user=user)
+        headers = {"Authorization": self.get_valid_user_token(user)}
+        tidal_api = os.getenv("TIDAL_API_URL")
+        url = f"{tidal_api}/users/me"
+        response = requests.get(url, headers=headers)
+
+        if response.status_code != 200:
+            logger.error(f"Failed to fetch Tidal user ID for user {user.username}: {response.text}")
+            raise ValueError("Failed to fetch Tidal user Data")
+
+        data = response.json().get("data", {})
+
+        tidal_token.tidal_user_id = data.get("id")
+
+        attributes = data.get("attributes", {})
+        if attributes:
+            tidal_token.tidal_email = attributes.get("email")
+            tidal_token.tidal_username = attributes.get("username")
+            tidal_token.tidal_country = attributes.get("country")
+
+        tidal_token.save()
+        return tidal_token
+
     def refresh_user_token(self, user):
         """
         Manually refresh a user's access token.
@@ -374,3 +401,69 @@ def get_tidal_token_for_user(user):
     """
     token_manager = TidalTokenManager()
     return token_manager.get_valid_user_token(user)
+
+
+class TidalAPIClient:
+    """
+    Client for making authenticated requests to the Tidal API.
+    """
+
+    def __init__(self, token_manager=None):
+        self.token_manager = token_manager or TidalTokenManager()
+        self.base_url = os.getenv("TIDAL_API_URL", "https://openapi.tidal.com/v2")
+
+    def _get_auth_headers(self, user):
+        """Get authorization headers for API requests."""
+        token = self.token_manager.get_valid_user_token(user)
+        if not token:
+            raise ValueError("No valid access token available for user")
+        return {"Authorization": token}
+
+    def get_user_playlists(self, user, next_page_url=None):
+        """
+        Fetch user's playlists from Tidal API. Default 20 items per page.
+        """
+        headers = self._get_auth_headers(user)
+
+        if next_page_url:
+            url = f"{self.base_url}{next_page_url}"
+        else:
+            url = f"{self.base_url}/userCollections/{user.tidal_token.tidal_user_id}/relationships/playlists"  # noqa E501
+
+        response = requests.get(url, headers=headers)
+        response.raise_for_status()
+
+        data = response.json()
+        return data.get("data", []), data.get("links", {}).get("next")
+
+    def get_playlist_tracks(self, user, playlist_id, next_page_url=None):
+        """
+        Fetch tracks from a specific playlist.
+        """
+        headers = self._get_auth_headers(user)
+
+        if next_page_url:
+            url = f"{self.base_url}{next_page_url}"
+        else:
+            url = f"{self.base_url}/playlists/{playlist_id}/relationships/items"
+
+        response = requests.get(url, headers=headers)
+        response.raise_for_status()
+
+        data = response.json()
+        return data.get("data", []), data.get("links", {}).get("next")
+
+    def get_playlist_details(self, user, playlist_id):
+        """
+        Get detailed information about a specific playlist.
+        """
+        headers = self._get_auth_headers(user)
+        url = f"{self.base_url}/playlists/{playlist_id}"
+
+        response = requests.get(url, headers=headers)
+        response.raise_for_status()
+
+        data = response.json()
+        return data.get("data", {}).get("id", {}), data.get("data", {}).get("attributes", {}).get(
+            "name", "Unknown Playlist"
+        )
